@@ -61,10 +61,4 @@ This structure reduces data redundancy and makes queries significantly faster th
 
 Kaggle — E-commerce transactions dataset
 
------
 
-Simple. Clear. Human. Professional. 💪
-
-The note about synthetic data brands is actually smart to include — shows you spotted the anomaly and understood why it happened 😄
-
-How many projects done now? 👀
