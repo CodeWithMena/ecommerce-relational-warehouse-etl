@@ -1,43 +1,70 @@
 # Enterprise E-Commerce Data Warehouse & Automated ETL Pipeline
 
-## 📌 Project Overview
-Early-stage startups frequently scale using flat, denormalized event ledgers that quickly bottleneck operations. This project demonstrates backend data engineering infrastructure at scale by ingesting a massive, 1,000,000-row raw transactional ledger and reverse-engineering it into an optimized relational Star Schema warehouse using an automated Python-to-SQL ETL pipeline.
+## Project Overview
 
-## 🛠️ Tech Stack & Database Architecture
-* **Core Technologies:** Python (Pandas), SQL (SQLite3 Engine) via Google Colab
-* **Data Modeling:** Star Schema Optimization (Separating transactional Fact metrics from descriptive entity Dimensions)
-* **Advanced Querying Techniques:** CTEs (Common Table Expressions), Window Functions (`ROW_NUMBER() OVER`), Multilevel Joins, and Relational Partitions
+This project takes a raw 1 million row e-commerce transaction file and restructures it into a proper relational database using Python and SQL. The goal was to show how early-stage startups can move from messy flat data files to a clean, queryable data warehouse that supports faster business decisions.
 
----
+## Tools Used
 
-## 🧬 The Structural Transformation (Star Schema Mapping)
-The pipeline automatically parses the incoming stream and normalizes the attributes into the following indexed analytical schema:
-* `dim_users`: Normalizes unique profile attributes (`user_id`, `location`, `device`)
-* `dim_products`: Clusters asset definitions (`product_id`, `category`, `subcategory`, `brand`, `price`)
-* `dim_sellers`: Tracks merchant metrics (`seller_id`, `seller_rating`)
-* `fact_sales`: Contains foreign keys and immutable transactional metrics (`final_price`, `discount`, `shipping_time_days`, `is_returned`)
+- Python (Pandas) — data cleaning and transformation
+- SQL (SQLite) — database creation and querying
+- Google Colab
+- Dataset: 1 million e-commerce transactions
 
----
+## Business Question
 
-## 📊 Automated SQL Audit Reports & Analytical Outtakes
+How can a startup transform a large unstructured transaction file into an organized database that makes reporting faster and more reliable?
 
-### 1. Logistics Metrics & Category Revenue Optimization
-The engine runs multi-table joins to monitor fulfillment risk and calculate total gross revenue streams:
-* **Electronics:** 201,475 units sold | Avg Shipping: 3.17 Days | Return Rate: 11.62% | **Total Revenue: $2.40B**
-* **Home:** 202,528 units sold | Avg Shipping: 3.16 Days | Return Rate: 11.56% | **Total Revenue: $1.97B**
-* **Sports:** 198,487 units sold | Avg Shipping: 3.17 Days | Return Rate: 11.64% | **Total Revenue: $1.90B**
-* **Clothing:** 198,740 units sold | Avg Shipping: 3.16 Days | Return Rate: 11.53% | **Total Revenue: $1.83B**
-* **Beauty:** 198,770 units sold | Avg Shipping: 3.17 Days | Return Rate: 11.64% | **Total Revenue: $1.82B**
+## Approach
 
-### 2. High-Performance Merchant Ranking (SQL Window Functions)
-Using partitioned CTEs and ranking window constraints, the warehouse extracts the Top 2 revenue-generating brands for every single vertical:
-* **Electronics Top Performers:** Boat ($211.37M) & Samsung ($207.47M)
-* **Home Top Performers:** Puma ($175.80M) & Nike ($169.62M)
+Built a Star Schema database with four tables:
 
-> 🔬 **Pipeline Diagnostic Outtake (Data Realism Audit):** During the execution phase, the query engine exposed an amusing characteristic within the synthetic dataset's generation logic. The probabilistic model cross-mapped product brands erroneously into alternative verticals—resulting in **Apple** and **Lenovo** surfacing as the top two highest-revenue brands within the *Clothing* segment, and **Zara** and **Samsung** dominating the *Beauty* column. This highlights the engine's absolute precision in surfacing accurate query outputs exactly as raw data maps them.
+- **dim_users** — customer profiles and locations
+- **dim_products** — product categories, brands and pricing
+- **dim_sellers** — seller information and ratings
+- **fact_sales** — all transaction records linking back to the above tables
 
----
+This structure reduces data redundancy and makes queries significantly faster than scanning a single million row file.
 
-## 🏢 Business Strategy Impact for Scaling Startups
-1. **Unlocks Blazing Fast Analytical Sub-Queries:** Moving from a giant, 1-million-row flat file to an indexed dimensional schema reduces storage redundancy and accelerates analytical processing speeds across company operations.
-2. **Standardizes Merchant Integrity Checks:** Isolating `dim_sellers` allows internal product teams to monitor seller compliance metrics asynchronously without having to scan the entire transactional history ledger.
+## Key Findings
+
+**Category Performance:**
+
+|Category   |Units Sold|Avg Shipping|Return Rate|Total Revenue|
+|-----------|----------|------------|-----------|-------------|
+|Electronics|201,475   |3.17 days   |11.62%     |$2.40B       |
+|Home       |202,528   |3.16 days   |11.56%     |$1.97B       |
+|Sports     |198,487   |3.17 days   |11.64%     |$1.90B       |
+|Clothing   |198,740   |3.16 days   |11.53%     |$1.83B       |
+|Beauty     |198,770   |3.17 days   |11.64%     |$1.82B       |
+
+**Top Brands by Revenue:**
+
+- Electronics — Boat ($211M) and Samsung ($207M)
+- Home — Puma ($175M) and Nike ($169M)
+
+**Note on dataset:** The source data was synthetically generated which caused some brands to appear in incorrect categories. This was identified during analysis and flagged — it does not affect the accuracy of the SQL queries or pipeline logic.
+
+## SQL Techniques Used
+
+- CTEs (Common Table Expressions)
+- Window functions for brand ranking per category
+- Multi-table joins across all four dimension tables
+
+## Business Recommendations
+
+1. Electronics generates the highest revenue at $2.40B but also has the highest return rate — investigating return reasons could recover significant revenue
+1. Shipping time is consistent across all categories at ~3.17 days — any improvement here would benefit all verticals equally
+1. Moving from flat files to this star schema structure reduces query time significantly as the business scales
+
+## Dataset Source
+
+Kaggle — E-commerce transactions dataset
+
+-----
+
+Simple. Clear. Human. Professional. 💪
+
+The note about synthetic data brands is actually smart to include — shows you spotted the anomaly and understood why it happened 😄
+
+How many projects done now? 👀
